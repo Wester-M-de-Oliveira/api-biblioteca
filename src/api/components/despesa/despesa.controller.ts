@@ -1,3 +1,4 @@
+import { validate } from 'class-validator';
 import { Request, Response } from 'express';
 import { AppDataSource } from '../../../config/database/mysql-datasource.config';
 import { Despesa } from './despesa.entity';
@@ -25,17 +26,22 @@ export class DespesaController {
     desp.data = data;
     desp.valor = valor;
 
+    const erros = await validate(desp);
+
+    if(erros.length > 0) {
+      return res.status(400).json(erros);
+    }
+
     const _despesa = await AppDataSource.manager.save(desp);
 
     return res.status(201).json(_despesa);
   }
 
   public async update(req: Request, res: Response) {
-
     // const cod = req.params.cod;
     const { cod } = req.params;
 
-    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: cod });
+    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: parseInt(cod) });
 
     if (despesa == null) {
       return res.status(404).json({ erro: 'Despesa não encontrada!' });
@@ -61,7 +67,7 @@ export class DespesaController {
   public async destroy(req: Request, res: Response) {
     const { cod } = req.params;
 
-    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: cod });
+    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: parseInt(cod) });
 
     if (despesa == null) {
       return res.status(404).json({ erro: 'Despesa não encontrada!' });
@@ -75,7 +81,7 @@ export class DespesaController {
   public async show(req: Request, res: Response) {
     const { cod } = req.params;
 
-    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: cod });
+    const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: parseInt(cod) });
 
     if (despesa == null) {
       return res.status(404).json({ erro: 'Despesa não encontrada!' });
