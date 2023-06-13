@@ -26,3 +26,17 @@ insert into despesas (id, descricao, data, data_efetivacao, valor, valor_pago, p
 insert into despesas (id, descricao, data, data_efetivacao, valor, valor_pago, pago) values (15, 'Jabbersphere', '2023-03-31', '2022-11-22 12:58:51', 1750.57, 1396.11, false);
 
 select * from despesas;
+
+
+create table categorias (
+	id int not null auto_increment primary key,
+    nome varchar(200) not null
+);
+
+insert into categorias (nome) values ('Moradia'), ('Lazer'), ('Diversas');
+
+select * from categorias;
+
+alter table despesas 
+	add categoria_id int null,
+    add foreign key (categoria_id) references categorias(id);

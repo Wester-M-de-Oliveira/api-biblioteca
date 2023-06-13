@@ -1,14 +1,13 @@
 import { IsBoolean, IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Categoria } from '../categoria/categoria.entity';
 
 @Entity('despesas')
 export class Despesa {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @IsNotEmpty({
-    message: 'A propriedade descricao não pode ser vazia'
-  })
+  @IsNotEmpty()
   @Column()
   descricao!: string;
 
@@ -25,7 +24,7 @@ export class Despesa {
   @IsNotEmpty()
   @IsNumber()
   @Column({
-    type: 'decimal', 
+    type: 'decimal',
     transformer: {
       to(value: any) { return value },
       from(value: any) { return parseFloat(value) }
@@ -35,17 +34,24 @@ export class Despesa {
 
   @IsOptional()
   @IsNumber()
-  @Column({ 
+  @Column({
     type: 'decimal',
     transformer: {
       to(value: any) { return value },
       from(value: any) { return parseFloat(value) }
     }
-   })
+  })
   valor_pago!: number;
 
   @IsOptional()
   @IsBoolean()
   @Column()
   pago!: boolean;
+
+  @ManyToOne(() => Categoria, { eager: true })
+  @JoinColumn({
+    name: 'categoria_id',
+    referencedColumnName: 'id'
+  })
+  categoria!: Categoria;
 }

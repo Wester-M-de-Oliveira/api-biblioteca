@@ -1,12 +1,13 @@
 import { validate } from 'class-validator';
 import { Request, Response } from 'express';
 import { AppDataSource } from '../../../config/database/mysql-datasource.config';
+import { Categoria } from '../categoria/categoria.entity';
 import { Despesa } from './despesa.entity';
 
 export class DespesaController {
   public async list(req: Request, res: Response) {
 
-    const despesas = await AppDataSource.manager.find(Despesa)
+    const despesas = await AppDataSource.manager.find(Despesa);
 
     return res.status(200).json({ dados: despesas, total: despesas.length });
   }
@@ -19,12 +20,23 @@ export class DespesaController {
     // let valor = req.body.valor;
     // let data = req.body.data;
 
-    let { descricao, valor, data } = req.body;
+    let { descricao, valor, data, categoria } = req.body;
+
+    if(categoria.id == undefined) {
+      return res.status(404).json({ erro: 'Categoria inexistente'})
+    }
+
+    const _categoria = await AppDataSource.manager.findOneBy(Categoria, { id: categoria.id });
+
+    if(_categoria == null) {
+      return res.status(404).json({ erro: 'Categoria inexistente'})
+    }
 
     let desp = new Despesa();
     desp.descricao = descricao;
     desp.data = data;
     desp.valor = valor;
+    desp.categoria = _categoria;
 
     const erros = await validate(desp);
 
@@ -80,6 +92,11 @@ export class DespesaController {
 
   public async show(req: Request, res: Response) {
     const { cod } = req.params;
+
+    if(!Number.isInteger(parseInt(cod))) {
+      return res.status(400).json();
+    }
+
 
     const despesa = await AppDataSource.manager.findOneBy(Despesa, { id: parseInt(cod) });
 
