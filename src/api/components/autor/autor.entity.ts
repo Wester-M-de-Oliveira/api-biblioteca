@@ -1,21 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('autor')
-export class Autor{
-
+export class Autor {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Column()
-    nome!: string;
+    nome: string;
 
     @Column()
-    nacionalidade!: string;
+    nacionalidade: string;
 
     @Column()
-    data_nascimento!: Date;
+    data_nascimento: Date;
 
     @Column()
-    perfil!: string;
-
+    perfil: string;
 }
