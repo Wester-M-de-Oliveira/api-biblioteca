@@ -12,33 +12,23 @@ export class EnderecoController{
     }
 
     public async create(req: Request, res: Response){
+        let endereco = new Endereco();
+        endereco.numero = req.body.numero;
+        endereco.bairro = req.body.bairro;
+        endereco.cidade = req.body.cidade;
+        endereco.estado = req.body.estado;
+        endereco.cep = req.body.cep;
+        endereco.rua = req.body.rua;
+        endereco.pais = req.body.pais;
+        endereco.complemento = req.body.complemento;
 
-        let numero = req.body.numero;
-        let bairro = req.body.bairro;
-        let cidade = req.body.cidade;
-        let estado = req.body.estado;
-        let cep = req.body.cep;
-        let rua = req.body.rua;
-        let pais = req.body.pais;
-        let complemento = req.body.complemento;
-
-        let end = new Endereco();
-        end.numero = numero;
-        end.bairro = bairro;
-        end.cidade = cidade;
-        end.estado = estado;
-        end.cep = cep;
-        end.rua = rua;
-        end.pais = pais;
-        end.complemento = complemento;
-
-        const erros = await validate(end);
+        const erros = await validate(endereco);
 
         if(erros.length > 0) {
             return res.status(400).json(erros);
         }
 
-        const _endereco = await AppDataSource.manager.save(end);
+        const _endereco = await AppDataSource.manager.save(endereco);
 
         return res.status(201).json(_endereco);
     }

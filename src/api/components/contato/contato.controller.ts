@@ -12,25 +12,19 @@ export class ContatoController{
     }
 
     public async create(req: Request, res: Response){
+        let contato = new Contato();
+        contato.rede_social = req.body.rede_social;
+        contato.email = req.body.email;
+        contato.celular = req.body.celular;
+        contato.telefone = req.body.telefone;
 
-        let rede_social = req.body.rede_social;
-        let email = req.body.email;
-        let celular = req.body.celular;
-        let telefone = req.body.telefone;
-
-        let cont = new Contato();
-        cont.rede_social = rede_social;
-        cont.email = email;
-        cont.celular = celular;
-        cont.telefone = telefone;
-
-        const erros = await validate(cont);
+        const erros = await validate(contato);
 
         if(erros.length > 0) {
             return res.status(400).json(erros);
         }
 
-        const _contato = await AppDataSource.manager.save(cont);
+        const _contato = await AppDataSource.manager.save(contato);
         return res.status(201).json(_contato);
     }
 

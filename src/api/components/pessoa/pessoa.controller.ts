@@ -16,50 +16,32 @@ export class PessoaController{
 
     public async create(req: Request, res: Response){
 
-        let nome = req.body.nome;
-        let cpf = req.body.cpf;
-        let rg = req.body.rg;
-        let data_nascimento = req.body.data_nascimento;
-        let sexo = req.body.sexo;
-        let contato_id = req.body.contato_id;
-        let endereco_id = req.body.endereco_id;
-
-        if(contato_id == undefined) {
-            return res.status(404).json({ erro: 'Contato inexistente'})
-        }
-
         const _contato = await AppDataSource.manager.findOneBy(Contato, { id: contato_id });
-
-        if(_contato == null) {
+        if(req.body.contato_id == undefined || _contato == null ) {
             return res.status(404).json({ erro: 'Contato inexistente'})
         }
+        const _endereco = await AppDataSource.manager.findOneBy(Endereco, { id: endereco_id });
 
-        if(endereco_id == undefined) {
+        if(req.body.endereco_id == undefined || _endereco == null) {
             return res.status(404).json({ erro: 'Endereço inexistente'})
         }
 
-        const _cendereco = await AppDataSource.manager.findOneBy(Endereco, { id: endereco_id });
+        let pessoa = new Pessoa();
+        pessoa.nome = req.body.nome;
+        pessoa.cpf = req.body.cpf;
+        pessoa.rg = req.body.rg;
+        pessoa.data_nascimento = req.body.data_nascimento;
+        pessoa.sexo = req.body.sexo;
+        pessoa.contato_id = req.body.contato_id;
+        pessoa.endereco_id = req.body.endereco_id;
 
-        if(_cendereco == null) {
-            return res.status(404).json({ erro: 'Endereço inexistente'})
-        }
-
-        let pes = new Pessoa();
-        pes.nome = nome;
-        pes.cpf = cpf;
-        pes.rg = rg;
-        pes.data_nascimento = data_nascimento;
-        pes.sexo = sexo;
-        pes.contato_id = contato_id;
-        pes.endereco_id = endereco_id;
-
-        const erros = await validate(pes);
+        const erros = await validate(pessoa);
 
         if(erros.length > 0) {
             return res.status(400).json(erros);
         }
 
-        const _pessoa = await AppDataSource.manager.save(pes);
+        const _pessoa = await AppDataSource.manager.save(pessoa);
 
         return res.status(201).json(_pessoa);
     }

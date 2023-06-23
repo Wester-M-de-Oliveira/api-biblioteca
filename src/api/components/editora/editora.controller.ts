@@ -12,23 +12,18 @@ export class EditoraController{
     }
 
     public async create(req: Request, res: Response){
-
-        let razao_social = req.body.razao_social;
-        let nome_fantasia = req.body.nome_fantasia;
-        let cnpj = req.body.cnpj;
-
-        let edit = new Editora();
-        edit.razao_social = razao_social;
-        edit.nome_fantasia = nome_fantasia;
-        edit.cnpj = cnpj;
+        let editora = new Editora();
+        editora.razao_social = req.body.razao_social;
+        editora.nome_fantasia = req.body.nome_fantasia;
+        editora.cnpj = req.body.cnp;
         
-        const erros = await validate(edit);
+        const erros = await validate(editora);
 
         if(erros.length > 0) {
             return res.status(400).json(erros);
         }
 
-        const _editora = await AppDataSource.manager.save(edit);
+        const _editora = await AppDataSource.manager.save(editora);
         return res.status(201).json(_editora);
     }
 

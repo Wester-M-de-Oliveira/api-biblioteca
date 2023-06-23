@@ -7,7 +7,7 @@ export class Emprestimo{
     id!: number;
 
     @Column()
-    data_hora_emprestimo !: Date;
+    data_hora_emprestimo!: Date;
 
     @Column()
     data_previsao_entrega!: Date;

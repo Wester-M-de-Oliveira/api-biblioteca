@@ -8,28 +8,24 @@ export class AutorController{
     public async list(req:Request, res:Response){
 
         const  autor = await AppDataSource.manager.find(Autor);
+
         res.status(200).json({ dados: autor });
     }
 
     public async create(req: Request, res: Response){
-        let nome = req.body.nome;
-        let nacionalidade= req.body.nacionalidade;
-        let data_nascimento = req.body.data_nascimento;
-        let perfil = req.body.perfil;
+        let autor = new Autor();
+        autor.nome = req.body.nome;
+        autor.nacionalidade = req.body.nacionalidade;
+        autor.data_nascimento = req.body.data_nascimento;
+        autor.perfil = req.body.perfil;
 
-        let aut = new Autor();
-        aut.nome = nome;
-        aut.nacionalidade = nacionalidade;
-        aut.data_nascimento = data_nascimento;
-        aut.perfil = perfil;
-
-        const erros = await validate(aut);
+        const erros = await validate(autor);
 
         if(erros.length > 0) {
             return res.status(400).json(erros);
         }
 
-        const _autor = await AppDataSource.manager.save(aut);
+        const _autor = await AppDataSource.manager.save(autor);
         return res.status(201).json(_autor);
 
     }
