@@ -1,2 +1,2 @@
 # api-biblioteca
-Api biblioteca para o careca
+Api biblioteca
